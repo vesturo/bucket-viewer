@@ -109,6 +109,86 @@ button:disabled {
   color: #ccfbf1;
 }
 
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: minmax(70px, 12vw) minmax(0, 1fr) minmax(70px, 12vw);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background: rgba(2, 6, 10, 0.94);
+  backdrop-filter: blur(8px);
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox-close {
+  grid-column: 3;
+  justify-self: end;
+  min-width: 92px;
+}
+
+.lightbox-frame {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+}
+
+.lightbox-frame img {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 154px);
+  object-fit: contain;
+  border-radius: 8px;
+  background: #05080d;
+}
+
+.lightbox-caption {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0 0;
+}
+
+.lightbox-caption h2,
+.lightbox-caption p {
+  margin: 0;
+}
+
+.lightbox-caption h2 {
+  font-size: 1rem;
+}
+
+.lightbox-caption p {
+  color: var(--muted);
+  font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.lightbox-nav {
+  grid-row: 2;
+  align-self: center;
+  min-height: 72px;
+  border-color: #344456;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lightbox-prev {
+  grid-column: 1;
+}
+
+.lightbox-next {
+  grid-column: 3;
+}
+
 .topbar {
   display: flex;
   align-items: flex-end;
@@ -506,6 +586,10 @@ button:focus-visible,
   color: var(--muted);
   font-weight: 800;
   text-decoration: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: zoom-in;
 }
 
 .image-card-preview img {
@@ -542,6 +626,12 @@ button:focus-visible,
   width: 94px;
   height: 70px;
   border-radius: 6px;
+}
+
+.image-open-button {
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
 }
 
 .file-main {
@@ -617,6 +707,38 @@ button:focus-visible,
   .file-thumb {
     width: 100%;
     height: 160px;
+  }
+
+  .lightbox {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    padding: 12px;
+  }
+
+  .lightbox-close {
+    grid-column: 1 / -1;
+  }
+
+  .lightbox-frame {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .lightbox-frame img {
+    max-height: calc(100vh - 210px);
+  }
+
+  .lightbox-nav {
+    grid-row: 3;
+    min-height: 44px;
+  }
+
+  .lightbox-prev {
+    grid-column: 1;
+  }
+
+  .lightbox-next {
+    grid-column: 2;
   }
 
   .actions {

@@ -22,6 +22,20 @@
       </section>
     </div>
 
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle" hidden>
+      <button id="lightboxClose" class="lightbox-close" type="button" aria-label="Close image viewer">Close</button>
+      <button id="lightboxPrev" class="lightbox-nav lightbox-prev" type="button" aria-label="Previous image">Prev</button>
+      <figure class="lightbox-frame">
+        <img id="lightboxImage" alt="">
+        <figcaption class="lightbox-caption">
+          <h2 id="lightboxTitle">Image preview</h2>
+          <p id="lightboxMeta"></p>
+          <p id="lightboxKey"></p>
+        </figcaption>
+      </figure>
+      <button id="lightboxNext" class="lightbox-nav lightbox-next" type="button" aria-label="Next image">Next</button>
+    </div>
+
     <header class="topbar">
       <div class="title-block">
         <p class="eyebrow">S3 Live Viewer</p>

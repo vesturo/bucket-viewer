@@ -28,6 +28,8 @@ const state = {
   snapshotLoaded: false,
   loadingLive: false,
   autoLoadEnabled: true,
+  lightboxImages: [],
+  lightboxIndex: -1,
 };
 
 const dom = {
@@ -51,6 +53,14 @@ const dom = {
   statPackages: document.querySelector("#statPackages"),
   statAssets: document.querySelector("#statAssets"),
   scrollSentinel: document.querySelector("#scrollSentinel"),
+  lightbox: document.querySelector("#lightbox"),
+  lightboxClose: document.querySelector("#lightboxClose"),
+  lightboxPrev: document.querySelector("#lightboxPrev"),
+  lightboxNext: document.querySelector("#lightboxNext"),
+  lightboxImage: document.querySelector("#lightboxImage"),
+  lightboxTitle: document.querySelector("#lightboxTitle"),
+  lightboxMeta: document.querySelector("#lightboxMeta"),
+  lightboxKey: document.querySelector("#lightboxKey"),
 };
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -485,7 +495,12 @@ function createFileRow(file, options = {}) {
   const rowChildren = [];
 
   if (options.thumbnail && isImage(file)) {
-    const thumb = createElement("div", { className: "file-thumb" });
+    const thumb = createElement("button", {
+      type: "button",
+      className: "file-thumb image-open-button",
+      title: `Preview ${file.key}`,
+      onClick: () => openLightboxForFile(file),
+    });
     const img = createElement("img", {
       src: objectUrl(file.key),
       alt: file.key,
@@ -527,12 +542,11 @@ function createFileRow(file, options = {}) {
 
 function createImageCard(file) {
   const ext = getExtension(file.key) || "image";
-  const preview = createElement("a", {
+  const preview = createElement("button", {
+    type: "button",
     className: "image-card-preview",
-    href: objectUrl(file.key),
-    target: "_blank",
-    rel: "noreferrer",
     title: file.key,
+    onClick: () => openLightboxForFile(file),
   });
   const img = createElement("img", {
     src: objectUrl(file.key),
@@ -586,6 +600,93 @@ function showNotice(kind, message, detail = "") {
 function hideNotice() {
   dom.notice.hidden = true;
   dom.notice.replaceChildren();
+}
+
+function getLightboxImages() {
+  const visible = getVisibleData().filter(isImage);
+  if (visible.length) {
+    return visible;
+  }
+  return sortFiles(state.entries.filter((entry) => !isFolder(entry) && isImage(entry)));
+}
+
+function updateLightbox() {
+  if (!dom.lightbox || state.lightboxIndex < 0 || !state.lightboxImages.length) {
+    return;
+  }
+
+  const total = state.lightboxImages.length;
+  const image = state.lightboxImages[state.lightboxIndex];
+  const ext = getExtension(image.key) || "image";
+  dom.lightboxImage.src = objectUrl(image.key);
+  dom.lightboxImage.alt = image.key;
+  dom.lightboxTitle.textContent = `Image ${state.lightboxIndex + 1} of ${total}`;
+  dom.lightboxMeta.textContent = `${ext.toUpperCase()} | ${formatBytes(image.size)} | ${formatDate(image.lastModified)}`;
+  dom.lightboxKey.textContent = image.key;
+  dom.lightboxPrev.disabled = total <= 1;
+  dom.lightboxNext.disabled = total <= 1;
+}
+
+function openLightboxForFile(file) {
+  const images = getLightboxImages();
+  const index = images.findIndex((image) => image.key === file.key);
+  state.lightboxImages = images;
+  state.lightboxIndex = index >= 0 ? index : 0;
+  updateLightbox();
+  dom.lightbox.hidden = false;
+  document.body.classList.add("modal-open");
+  dom.lightboxClose.focus();
+}
+
+function closeLightbox() {
+  if (!dom.lightbox || dom.lightbox.hidden) {
+    return;
+  }
+
+  dom.lightbox.hidden = true;
+  dom.lightboxImage.removeAttribute("src");
+  state.lightboxImages = [];
+  state.lightboxIndex = -1;
+  if (dom.corporateDisclaimer?.hidden !== false) {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+function stepLightbox(delta) {
+  if (!state.lightboxImages.length) {
+    return;
+  }
+
+  const total = state.lightboxImages.length;
+  state.lightboxIndex = (state.lightboxIndex + delta + total) % total;
+  updateLightbox();
+}
+
+function setupLightbox() {
+  if (!dom.lightbox) {
+    return;
+  }
+
+  dom.lightboxClose.addEventListener("click", closeLightbox);
+  dom.lightboxPrev.addEventListener("click", () => stepLightbox(-1));
+  dom.lightboxNext.addEventListener("click", () => stepLightbox(1));
+  dom.lightbox.addEventListener("click", (event) => {
+    if (event.target === dom.lightbox) {
+      closeLightbox();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (dom.lightbox.hidden) {
+      return;
+    }
+    if (event.key === "Escape") {
+      closeLightbox();
+    } else if (event.key === "ArrowLeft") {
+      stepLightbox(-1);
+    } else if (event.key === "ArrowRight") {
+      stepLightbox(1);
+    }
+  });
 }
 
 function setupDisclaimer() {
@@ -831,6 +932,7 @@ async function boot() {
 }
 
 function resetLiveData() {
+  closeLightbox();
   state.entries = [];
   state.pagesLoaded = 0;
   state.snapshotLoaded = false;
@@ -877,5 +979,6 @@ dom.loadLiveButton.addEventListener("click", () => {
 dom.loadNextButton.addEventListener("click", () => loadLivePage("next"));
 
 setupDisclaimer();
+setupLightbox();
 setupInfiniteScroll();
 boot();
