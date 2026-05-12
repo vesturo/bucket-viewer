@@ -17,9 +17,7 @@ In less consultant-shaped language: it is a generic bucket listing viewer. It sh
 ## Bucket Presets
 
 The app currently includes:
-
-- `Somnium`, the default preset, included for generic-product theater and future compatibility.
-- `ai-space`, a working DigitalOcean Spaces CDN endpoint with public listing and object access.
+- `Somnium`, a working DigitalOcean Spaces CDN endpoint with public listing and object access.
 
 Preset configuration lives in [app.js](./app.js). Add or remove presets there when the imaginary governance council has completed its imaginary review cycle.
 
