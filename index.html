@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>S3 Bucket Viewer</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title-block">
+        <p class="eyebrow">S3 Live Viewer</p>
+        <h1>bucket viewer</h1>
+      </div>
+      <div class="live-actions" aria-label="Live listing controls">
+        <button id="loadLiveButton" type="button">Reload live</button>
+        <button id="loadNextButton" type="button" disabled>Load next page</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="stats-grid" aria-label="Bucket summary">
+        <article class="stat">
+          <span class="stat-label">Objects</span>
+          <strong id="statObjects">0</strong>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Files</span>
+          <strong id="statFiles">0</strong>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Images</span>
+          <strong id="statImages">0</strong>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Packages</span>
+          <strong id="statPackages">0</strong>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Asset groups</span>
+          <strong id="statAssets">0</strong>
+        </article>
+      </section>
+
+      <section id="notice" class="notice" hidden></section>
+
+      <section class="toolbar" aria-label="Viewer controls">
+        <label class="field bucket-field">
+          <span>Bucket</span>
+          <select id="bucketSelect">
+            <option value="somnium" selected>Somnium</option>
+            <option value="ai-space">ai-space</option>
+          </select>
+        </label>
+
+        <label class="field search-field">
+          <span>Search</span>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="Key, owner, asset, extension">
+        </label>
+
+        <label class="field sort-field">
+          <span>Sort</span>
+          <select id="sortSelect">
+            <option value="modified-desc">Newest first</option>
+            <option value="modified-asc">Oldest first</option>
+            <option value="size-desc">Largest first</option>
+            <option value="size-asc">Smallest first</option>
+            <option value="key-asc">Key A-Z</option>
+            <option value="type-asc">Type A-Z</option>
+          </select>
+        </label>
+
+        <div class="view-tabs" aria-label="Result view">
+          <button type="button" data-view="assets" class="active">Assets</button>
+          <button type="button" data-view="files">Files</button>
+          <button type="button" data-view="packages">Packages</button>
+          <button type="button" data-view="images">Images</button>
+          <button type="button" data-view="ungrouped">Ungrouped</button>
+        </div>
+
+        <div id="imageLayoutControl" class="layout-tabs" aria-label="Image layout" hidden>
+          <button type="button" data-image-layout="gallery" class="active">Gallery</button>
+          <button type="button" data-image-layout="list">List</button>
+        </div>
+      </section>
+
+      <section class="results-heading">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2 id="resultsTitle">Assets</h2>
+        </div>
+        <span id="resultsCount" class="result-count">0 shown</span>
+      </section>
+
+      <section id="results" class="results asset-grid" aria-live="polite"></section>
+      <div id="scrollSentinel" class="scroll-sentinel" aria-hidden="true"></div>
+    </main>
+  </body>
+</html>
