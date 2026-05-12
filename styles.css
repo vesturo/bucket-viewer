@@ -29,6 +29,10 @@ body {
   letter-spacing: 0;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 button,
 input,
 select {
@@ -61,6 +65,48 @@ button:disabled {
   cursor: not-allowed;
   color: #667685;
   background: #111821;
+}
+
+.disclaimer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(4, 8, 13, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.disclaimer-backdrop[hidden] {
+  display: none;
+}
+
+.disclaimer-panel {
+  width: min(100%, 640px);
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid #355063;
+  border-radius: 8px;
+  background: #111923;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.48);
+}
+
+.disclaimer-panel h2 {
+  margin-bottom: 14px;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  line-height: 1.08;
+}
+
+.disclaimer-panel p {
+  color: #becad5;
+  line-height: 1.55;
+}
+
+.disclaimer-panel button {
+  margin-top: 8px;
+  border-color: var(--teal);
+  background: rgba(45, 212, 191, 0.16);
+  color: #ccfbf1;
 }
 
 .topbar {

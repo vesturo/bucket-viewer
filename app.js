@@ -1,4 +1,5 @@
 const DEFAULT_BUCKET_ID = "somnium";
+const DISCLAIMER_STORAGE_KEY = "s3-bucket-viewer-disclaimer-accepted-v1";
 const BUCKET_PRESETS = {
   "somnium": {
     id: "somnium",
@@ -30,6 +31,8 @@ const state = {
 };
 
 const dom = {
+  corporateDisclaimer: document.querySelector("#corporateDisclaimer"),
+  acceptDisclaimerButton: document.querySelector("#acceptDisclaimerButton"),
   loadLiveButton: document.querySelector("#loadLiveButton"),
   loadNextButton: document.querySelector("#loadNextButton"),
   notice: document.querySelector("#notice"),
@@ -585,6 +588,34 @@ function hideNotice() {
   dom.notice.replaceChildren();
 }
 
+function setupDisclaimer() {
+  if (!dom.corporateDisclaimer || !dom.acceptDisclaimerButton) {
+    return;
+  }
+
+  let accepted = false;
+  try {
+    accepted = localStorage.getItem(DISCLAIMER_STORAGE_KEY) === "accepted";
+  } catch {
+    accepted = false;
+  }
+
+  if (!accepted) {
+    dom.corporateDisclaimer.hidden = false;
+    document.body.classList.add("modal-open");
+  }
+
+  dom.acceptDisclaimerButton.addEventListener("click", () => {
+    try {
+      localStorage.setItem(DISCLAIMER_STORAGE_KEY, "accepted");
+    } catch {
+      // The acknowledgement still closes even when storage is unavailable.
+    }
+    dom.corporateDisclaimer.hidden = true;
+    document.body.classList.remove("modal-open");
+  });
+}
+
 function updateStats() {
   const stats = getStats();
   dom.statObjects.textContent = stats.objects.toLocaleString();
@@ -845,5 +876,6 @@ dom.loadLiveButton.addEventListener("click", () => {
 });
 dom.loadNextButton.addEventListener("click", () => loadLivePage("next"));
 
+setupDisclaimer();
 setupInfiniteScroll();
 boot();

@@ -8,6 +8,20 @@
     <script src="./app.js" defer></script>
   </head>
   <body>
+    <div id="corporateDisclaimer" class="disclaimer-backdrop" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle" hidden>
+      <section class="disclaimer-panel">
+        <p class="eyebrow">Responsible Visibility Notice</p>
+        <h2 id="disclaimerTitle">Generic bucket viewer acknowledgement</h2>
+        <p>
+          This tool is a static, preset-driven viewer for public or otherwise approved S3-compatible listings. It does not grant permission, ownership, license rights, compliance approval, or a magic enterprise exception.
+        </p>
+        <p>
+          By continuing, you confirm that your use is authorized, legitimate, and aligned with whatever governance framework your organization has enthusiastically laminated.
+        </p>
+        <button id="acceptDisclaimerButton" type="button">Acknowledge and continue</button>
+      </section>
+    </div>
+
     <header class="topbar">
       <div class="title-block">
         <p class="eyebrow">S3 Live Viewer</p>
